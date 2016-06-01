@@ -8,6 +8,15 @@ return [
             'template_path' => __DIR__ . '/../templates/',
         ],
 
+
+
+'db' => [
+  'host' =>"localhost",
+'user' => "user",
+'pass' => "password",
+'dbname' => "exampleapp",
+],
+
         // Monolog settings
         'logger' => [
             'name' => 'slim-app',

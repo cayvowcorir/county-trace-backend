@@ -2,19 +2,22 @@
     "name": "slim/slim-skeleton",
     "description": "A Slim Framework skeleton application for rapid development",
     "keywords": ["microframework","rest","router", "psr7"],
-    "homepage": "http://github.com/slimphp/Slim-Skeleton",
+    "homepage": "http://www.kevin-korir.com",
     "license": "MIT",
     "authors": [
         {
-            "name": "Josh Lockhart",
-            "email": "info@joshlockhart.com",
-            "homepage": "http://www.joshlockhart.com/"
+            "name": "Kevin Korir",
+            "email": "mail@kevin-korir.com",
+            "homepage": "http://www.kevin-korir.com/"
         }
     ],
     "require": {
         "php": ">=5.5.0",
         "slim/slim": "^3.1",
         "slim/php-view": "^2.0",
-        "monolog/monolog": "^1.17"
+        "monolog/monolog": "^1.17",
+"illuminate/database": "~5.1",
+        "robmorgan/phinx": "0.5.*",
+        "jeremykendall/slim-auth": "^1.0"
     }
 }
