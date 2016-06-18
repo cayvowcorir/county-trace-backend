@@ -17,7 +17,9 @@
         "slim/php-view": "^2.0",
         "monolog/monolog": "^1.17",
 "illuminate/database": "~5.1",
+"jeremykendall/slim-auth":"*",
         "robmorgan/phinx": "0.5.*",
-        "jeremykendall/slim-auth": "^1.0"
+        "tuupola/slim-basic-auth": "^2.0",
+        "slim/csrf": "^0.6.0"
     }
 }

@@ -10,33 +10,49 @@ if (PHP_SAPI == 'cli-server') {
 
 require __DIR__ . '/vendor/autoload.php';
 
-spl_autoload_register(function ($classname) {
-    require ("/classes/" . $classname . ".php");
-});
-
 session_start();
 
 // Instantiate the app
 $settings = require __DIR__ . '/src/settings.php';
 $app = new \Slim\App($settings);
 
+
 $container = $app->getContainer();
+
+
 
 // Set up dependencies
 require __DIR__ . '/src/dependencies.php';
 
 require __DIR__ . '/src/Migrations/Migration.php';
 
-//Db Connection
-require __DIR__ . '/src/db.php';
 
 // Register middleware
 require __DIR__ . '/src/middleware.php';
 
+
 // Register routes
 require __DIR__ . '/src/routes.php';
 
-// Run app
+
+require __DIR__."/classes/Models/County.php";
+require __DIR__."/classes/Models/seeder.php";
+require __DIR__."/classes/Models/Concern.php";
+require __DIR__."/classes/Models/User.php";
+require __DIR__."/classes/Models/Session.php";
+require __DIR__."/classes/Models/Project.php";
+require __DIR__."/classes/Models/Leader.php";
+
+require __DIR__."/classes/Controllers/Controller.php";
+require __DIR__."/classes/Controllers/AuthController.php";
+require __DIR__."/classes/Controllers/BlocksController.php";
+require __DIR__."/classes/Controllers/ProjectsController.php";
+require __DIR__."/classes/Controllers/ConcernsController.php";
+require __DIR__."/classes/Controllers/LeadersController.php";
+
+
+// Run
+
 $app->run();
 
 

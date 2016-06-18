@@ -28,52 +28,108 @@ class MyFirstMigration extends Migration
      */
     public function change()
     {
-      $table = $this->table('leader', array('id' => false, 'primary_key' => 'leaderId'));
-        $table->addColumn('leaderId', 'integer')
-              ->addColumn('leaderName', 'string')
-              ->addColumn('leaderImageUrl', 'string')
-              ->addColumn('leaderElectedFrom', 'datetime')
-              ->addColumn('leaderElectedTo', 'datetime')
-              ->create();
 
-      $table = $this->table('block', array('id' => false, 'primary_key' => 'blockId'));
-        $table->addColumn('blockId', 'integer')
-              ->addColumn('name', 'string')
+
+      $table = $this->table('block', array('id' => 'blockId'));
+        $table->addColumn('name', 'string')
               ->addColumn('level', 'string')
-              ->addColumn('imageUrl', 'datetime')
-              ->addColumn('leaderElectedTo', 'datetime')
+              ->addColumn('imageUrl', 'string', array('null' => true))
+               ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
               ->create();
 
-      $table = $this->table('project', array('id' => false, 'primary_key' => 'projectId'));
-        $table->addColumn('projectId', 'integer')
-              ->addColumn('projectName', 'string')
+      $table = $this->table('citizen');
+        $table->addColumn('citizenName', 'string')
+              ->addColumn('citizenEmail', 'string')
+              ->addColumn('citizenPassword', 'string')
+              ->addColumn('citizenImageUrl', 'string', array('null' => true))
+               ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addIndex('citizenEmail', array('unique' => true))
+              ->create();
+
+      $table = $this->table('leader');
+              ->addColumn('position', 'string')
+              ->addColumn('password', 'string')
+              ->addColumn('name', 'string')
+              ->addColumn('email', 'string')
+              ->addColumn('imageUrl', 'string', array('null' => true))
+              ->addColumn('blockId', 'integer')
+              ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+                ->addForeignKey('blockId', 'block', 'blockId', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
+              ->create();
+
+      $table = $this->table('session');
+        $table->addColumn('citizenId', 'integer')
+              ->addColumn('token', 'string')
+              ->addColumn('userAgent', 'string')
+              ->addColumn('loginDate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('active', 'boolean')
+               ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->create();
+
+              //Add expiry date on tokens
+
+      $table = $this->table('project', array('id' => 'projectId'));
+        $table->addColumn('projectName', 'string')
               ->addColumn('projectDescription', 'string')
               ->addColumn('projectStartDate', 'datetime')
-              ->addColumn('projectEndDate', 'datetime')
+              ->addColumn('projectEndDate', 'datetime', array('null' => true))
               ->addColumn('projectStatus', 'string')
+              ->addColumn('blockId', 'integer')
+              ->addColumn('citizenId', 'integer')
               ->addColumn('projectBudget', 'string')
-              ->addColumn('projectRating', 'integer')
+               ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addForeignKey('blockId', 'block', 'blockId', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
+              ->addForeignKey('citizenId', 'citizen', 'id', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
               ->create();
 
-      $table = $this->table('comment', array('id' => false, 'primary_key' => 'commentId'));
-        $table->addColumn('commentId', 'integer')
-              ->addColumn('commentBody', 'string')
-              ->addColumn('commentDate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
-              ->create();
 
-      $table = $this->table('citizen', array('id' => false, 'primary_key' => 'citizenId'));
-        $table->addColumn('citizenId', 'integer')
-              ->addColumn('citizenName', 'string')
-              ->addColumn('citizenEmail', 'string')
-              ->addColumn('citizenImageUrl', 'string')
-              ->create();
-
-      $table = $this->table('publicConcern', array('id' => false, 'primary_key' => 'publicConcernId'));
-        $table->addColumn('publicConcernId', 'integer')
-              ->addColumn('publicConcernName', 'string')
+      $table = $this->table('publicConcern', array('id' => 'publicConcernId'));
+        $table->addColumn('publicConcernName', 'string')
               ->addColumn('publicConcernDescription', 'string')
-              ->addColumn('publicConcernImageUrl', 'string')
-              ->addColumn('publicConcernDate', 'datetime')
+              ->addColumn('publicConcernImageUrl', 'string', array('null' => true))
+              ->addColumn('addressee', 'string', array('null' => true))
+              ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('citizenId', 'integer')
+              ->addColumn('blockId', 'integer')
+              ->addForeignKey('blockId', 'block', 'blockId', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
+              ->addForeignKey('citizenId', 'citizen', 'id', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
               ->create();
+
+
+      $table = $this->table('projectRating');
+        $table->addColumn('projectId', 'integer')
+              ->addColumn('citizenId', 'integer')
+               ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addForeignKey('projectId', 'project', 'projectId', array('delete'=> 'CASCADE', 'update'=> 'NO_ACTION'))
+              ->addForeignKey('citizenId', 'citizen', 'id', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
+              ->create();
+
+      $table = $this->table('projectComment', array('id' => 'commentId'));
+        $table->addColumn('commentBody', 'string')
+              ->addColumn('projectId', 'integer')
+              ->addColumn('commentDate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+               ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addForeignKey('projectId', 'project', 'projectId', array('delete'=> 'CASCADE', 'update'=> 'NO_ACTION'))
+              ->create();
+
+      $table = $this->table('publicConcernComment', array('id' => 'commentId'));
+        $table->addColumn('commentBody', 'string')
+              ->addColumn('publicConcernId', 'integer')
+              ->addColumn('commentDate', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+               ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+
+              ->create();
+
+
+
     }
 }

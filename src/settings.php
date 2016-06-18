@@ -10,12 +10,16 @@ return [
 
 
 
-'db' => [
-  'host' =>"localhost",
-'user' => "user",
-'pass' => "password",
-'dbname' => "exampleapp",
-],
+        'db' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'database' => 'countytrace',
+            'username' => 'root',
+            'password' => '',
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+        ],
 
         // Monolog settings
         'logger' => [
