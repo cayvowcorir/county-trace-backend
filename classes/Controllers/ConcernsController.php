@@ -5,6 +5,7 @@ namespace Controllers;
 use Controllers\AuthController;
 use Controllers\Controller;
 use Models\Concern;
+use Models\ConcernImage;
 
 
 
@@ -116,18 +117,71 @@ public function getAllConcerns($request, $response, $args){
         $concern->setAttribute('addressee', $data['addressee']);
         $concern->setAttribute('citizenId', (int)$session['citizenId']);
 
-        $success = array('code' => '1' );
         $failiure = array('code' => '-1' );
         // error_log(print_r($concern, TRUE));
         try{
           $concern->saveOrFail();
-          $response = $response->withJson($success);
+          $response = $response->withJson(Array('code' => '1', 'concernId'=>$concern->publicConcernId));
         }
         catch(Exception $e){
           $response = $response->withJson($failiure);
         };
       }
         return $response;
+
+   }
+
+   /*==============================================
+   =============Post Concern Images================
+   ================================================*/
+   public function postConcernImages($request, $response, $args){
+      $token=$request->getHeader('X-Api-Token');
+      $session=$this->ci->get('Controllers\AuthController')->authorize($token);
+
+      if($session==null){
+        $response=$response->withJson(Array("Error"=>"Not Authorized"));
+      }
+      else{
+
+        $files = $request->getUploadedFiles();
+        $concernId=$args['id'];
+
+        $newfile = $files['file'];
+
+        if ($newfile->getError() === UPLOAD_ERR_OK) {
+            $uploadFileName = $newfile->getClientFilename();
+            $extension = explode("/",$newfile->getClientMediaType());
+            $imageName="concern".microtime().".".$extension[1];
+
+            $concernImage=new ConcernImage;
+            $concernImage->setAttribute('publicConcernId',$concernId);
+            $concernImage->setAttribute('imageUrl', $imageName);
+            try{
+              $concernImage->saveOrFail();
+               try{
+              $newfile->moveTo(__DIR__ . "/../../public/images/concerns/$imageName");
+              $status=Array("Status"=>"Success");
+
+              }
+              catch (Exception $e){
+                $status=Array("Status"=>"Fail");
+              }
+            }
+            catch (Exception $e){
+              $status=Array("Status"=>"Fail");
+            }
+
+            error_log(print_r(time(), TRUE));
+
+
+
+        }
+        else $status=Array("Status"=>"Fail");
+
+        return $response->withJson($status);
+
+
+      }
 
    }
 

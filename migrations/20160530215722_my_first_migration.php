@@ -91,7 +91,6 @@ class MyFirstMigration extends Migration
       $table = $this->table('publicConcern', array('id' => 'publicConcernId'));
         $table->addColumn('publicConcernName', 'string')
               ->addColumn('publicConcernDescription', 'string')
-              ->addColumn('publicConcernImageUrl', 'string', array('null' => true))
               ->addColumn('addressee', 'string', array('null' => true))
               ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
               ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
@@ -99,6 +98,16 @@ class MyFirstMigration extends Migration
               ->addColumn('blockId', 'integer')
               ->addForeignKey('blockId', 'block', 'blockId', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
               ->addForeignKey('citizenId', 'citizen', 'id', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
+              ->create();
+
+
+        $table = $this->table('concernImages');
+        $table->addColumn('publicConcernId', 'integer')
+              ->addColumn('imageUrl', 'string')
+              ->addColumn('created_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addColumn('updated_at', 'timestamp', array('default' => 'CURRENT_TIMESTAMP'))
+              ->addForeignKey('blockId', 'block', 'blockId', array('delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'))
+              ->addForeignKey('publicConcernId', 'publicConcern', 'publicConcernId', array('delete'=> 'CASCADE', 'update'=> 'NO_ACTION'))
               ->create();
 
 

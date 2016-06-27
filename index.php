@@ -42,6 +42,7 @@ require __DIR__."/classes/Models/User.php";
 require __DIR__."/classes/Models/Session.php";
 require __DIR__."/classes/Models/Project.php";
 require __DIR__."/classes/Models/Leader.php";
+require __DIR__."/classes/Models/ConcernImage.php";
 
 require __DIR__."/classes/Controllers/Controller.php";
 require __DIR__."/classes/Controllers/AuthController.php";
