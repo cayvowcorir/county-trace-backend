@@ -109,7 +109,12 @@ $app->options('/concerns/{id}', function ($request, $response, $args) {
 })->add($middleware);
 
 $app->post('/concerns/{id}/images', 'Controllers\ConcernsController:postConcernImages')->add($middleware)->add($authentication);
+$app->get('/concerns/{id}/images', 'Controllers\ConcernsController:getConcernImages')->add($middleware)->add($authentication);
 $app->options('/concerns/{id}/images', function ($request, $response, $args) {
+})->add($middleware);
+
+$app->get('/images/concerns/{name}', 'Controllers\ConcernsController:getConcernImage')->add($middleware)->add($authentication);
+$app->options('/images/concerns/{name}', function ($request, $response, $args) {
 })->add($middleware);
 
 $app->get('/concerns', 'Controllers\ConcernsController:getAllConcerns')->add($middleware)->add($authentication);

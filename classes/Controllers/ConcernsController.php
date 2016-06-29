@@ -152,6 +152,7 @@ public function getAllConcerns($request, $response, $args){
             $uploadFileName = $newfile->getClientFilename();
             $extension = explode("/",$newfile->getClientMediaType());
             $imageName="concern".microtime().".".$extension[1];
+            $imageName = str_replace(' ', '', $imageName);
 
             $concernImage=new ConcernImage;
             $concernImage->setAttribute('publicConcernId',$concernId);
@@ -171,7 +172,6 @@ public function getAllConcerns($request, $response, $args){
               $status=Array("Status"=>"Fail");
             }
 
-            error_log(print_r(time(), TRUE));
 
 
 
@@ -185,6 +185,67 @@ public function getAllConcerns($request, $response, $args){
 
    }
 
+   /*=======================================
+   ===============Get all Concern Image Urls====
+   ==============================================*/
+
+   public function getConcernImages($request, $response, $args){
+      $token=$request->getHeader('X-Api-Token');
+      $session=$this->ci->get('Controllers\AuthController')->authorize($token);
+
+      if($session==null){
+        $response=$response->withJson(Array("Error"=>"Not Authorized"));
+      }
+      else{
+        $concernId=$args['id'];
+        $concernImages=$this->ci->get('db')->table('concernImages')->where('publicConcernId', '=', $concernId)->get();
+        error_log(print_r(count($concernImages), True));
+        $arrayCount=count($concernImages);
+        $responseArray=[];
+        for($i=0; $i<$arrayCount; $i++){
+          array_push($responseArray,$concernImages[$i]->imageUrl);
+
+        }
+        error_log(print_r($responseArray, True));
+        return $response->withJson($responseArray);
+
+      }
+   }
+
+
+   /*=======================================
+   ===============Get conern Image====
+   ==============================================*/
+    public function getConcernImage($request, $response, $args){
+      $token=$request->getHeader('X-Api-Token');
+      $session=$this->ci->get('Controllers\AuthController')->authorize($token);
+
+      if($session==null){
+        $response=$response->withJson(Array("Error"=>"Not Authorized"));
+      }
+      else{
+        $concernImageName=$args['name'];
+        $splitName=explode('.', $concernImageName);
+        error_log(print_r($splitName,True));
+        $dir=__DIR__ . "/../../public/images/concerns";
+        error_log(print_r($dir,True));
+        $image=file_get_contents($dir.$concernImageName);
+
+        $response->withHeader('Content-Type', 'image/'.$splitName[1] );
+        $response->withHeader('Content-Disposition', 'attachment');
+        $response->withHeader('filename',$concernImageName);
+        $response->withHeader('Content-Length',  filesize($image));
+
+
+        ob_clean();
+        flush();
+        readfile($concernImageName);
+        echo($concernImageName);
+
+        return $response->withJson($responseArray);
+
+      }
+   }
 }
 
 //$counties = array("Mombasa","Kwale","Kilifi","Tana River","Lamu","Taita-Taveta","Garissa","wajir","Mandera","Marsabit","Isiolo","Meru","Tharaka-Nithi","Embu","Kitui","Machakos","Makueni","Nyandarua","Nyeri","Kirinyaga","Murang'a","Kiambu","Turkana","West Pokot","Samburu","Trans Nzoia","Uasin Gishu","Elgeyo-Marakwet","Nandi","Baringo","Laikipia","Nakuru","Narok","Kajiado","Kericho","Bomet","Kakamega","Vihiga","Bungoma","Busia","Siaya","Kisumu","Homa Bay","Migori","Kisii","Nyamira","Nairobi City" );
