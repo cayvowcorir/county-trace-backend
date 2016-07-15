@@ -38,7 +38,7 @@ $middleware=function ($request, $response, $next) {
 };
 
 $elevatedPrivilege=function ($request, $response, $next) {
-  $allowed_http_origin   = 'http://localhost:9001';
+  $allowed_http_origin   = 'http://0.0.0.0:9001';
 
   $requestHeader=$request->getHeader('origin');
 
